@@ -30,6 +30,21 @@ extend.
 
 ---
 
+## Tech stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| LLM client | `anthropic>=0.40` (Python SDK) | All four sub-agents use the same SDK with their own tool sets and system prompts. No third-party agent framework. |
+| HTTP | `httpx>=0.27` | Workday client (paginated POSTs). |
+| CLI | `rich>=13.7` | REPL formatting and per-agent progress display. |
+| Config | `python-dotenv>=1.0` | Loads `ANTHROPIC_API_KEY` from `.env`. |
+| Storage | stdlib `csv` + `sqlite3` | SQLite ships with Python; no separate DB needed. |
+| Tests | `pytest>=8.0` (dev) | All offline; no live HTTP or Anthropic calls. |
+| Build | `hatchling` | Minimal PEP 517 backend. |
+| Python | `>=3.11` | Modern type hints, dataclass-with-slots. |
+
+Model used: `claude-haiku-4-5-20251001` for all four sub-agents. The orchestrator is hand-rolled — each sub-agent is a function that runs its own tool-use loop. No `Agent`, `Crew`, `Graph`, or other framework primitives.
+
 ## High-level architecture
 
 ```mermaid
